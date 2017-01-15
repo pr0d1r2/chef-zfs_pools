@@ -47,3 +47,11 @@ Rackable S3012 to build systems):
   ]
 }
 ```
+
+### Berkshelf
+
+Add this to your `Berksfile`:
+
+```
+cookbook 'zfs_pools', github: 'pr0d1r2/chef-zfs_pools'
+```
