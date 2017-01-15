@@ -1,0 +1,21 @@
+#!/bin/bash
+
+function until_success() {
+  false
+  while [ $? -gt 0 ]; do
+    $@
+    sleep 1
+  done
+}
+
+<%- @disk_mapping.each do |disk_by_id, mapper| %>
+  echo
+  echo
+  echo "/etc/zfs_pools/<%= @name %>/<%= mapper %>-<%= disk_by_id %>"
+  if [ ! -e /dev/mapper/<%= mapper %> ]; then
+    until_success cryptsetup luksOpen /dev/disk/by-id/<%= disk_by_id %> <%= mapper %>
+  fi
+<%- end %>
+
+/etc/init.d/zfs-import start
+/etc/init.d/zfs-mount start

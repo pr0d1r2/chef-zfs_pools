@@ -1,0 +1,5 @@
+name 'zfs_pools'
+version '1.0.0'
+depends 'gentoo'
+depends 'zfs'
+provides 'zfs_pools'
