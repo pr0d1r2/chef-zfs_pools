@@ -1,4 +1,4 @@
-include_recipe 'zfs'
+include_recipe 'zfs' if platform_family?('gentoo')
 
 [node[:zfs_pools]].flatten.compact.each do |zfs_pool|
   %w[setup mount].each do |script_type|
