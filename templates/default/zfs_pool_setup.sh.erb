@@ -59,7 +59,7 @@ fi
 
 zfs set atime=off <%= @name %>
 
-<%- @sub_resources.each_pair do |sub_resource, members| %>
+<%- @sub_resources.to_h.each_pair do |sub_resource, members| %>
 if [ ! -e /etc/zfs_pools/<%= @name %>/<%= sub_resource %>.created ]; then
   zfs create -o mountpoint=none <%= @name %>/<%= sub_resource %> || return $?
   if [ ! -d /etc/zfs_pools/<%= @name %> ]; then
