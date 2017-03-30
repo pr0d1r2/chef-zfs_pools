@@ -41,6 +41,21 @@ Rackable S3012 to build systems):
             "name": "Inbox",
             "mountpoint": "/home/Inbox"
           }
+        ],
+        "GENTOO": [
+          {
+            "name": "portage",
+            "mountpoint": "/usr/portage",
+            "compression": "gzip-9"
+          },
+          {
+            "name": "distfiles",
+            "mountpoint": "/usr/portage/distfiles"
+          },
+          {
+            "name": "packages",
+            "mountpoint": "/usr/portage/packages"
+          }
         ]
       }
     }
