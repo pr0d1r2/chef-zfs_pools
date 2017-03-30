@@ -75,5 +75,8 @@ if [ ! -e /etc/zfs_pools/<%= @name %>/<%= sub_resource %>/<%= member[:name] %>.c
   fi
   touch /etc/zfs_pools/<%= @name %>/<%= sub_resource %>/<%= member[:name] %>.created || return $?
 fi
+if member[:compression]
+  zfs set compression=<%= member[:compression] %> <%= @name %>/<%= sub_resource %>/<%= member[:name] %>
+fi
 <%- end %>
 <%- end %>
