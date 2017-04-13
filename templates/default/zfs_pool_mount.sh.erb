@@ -9,6 +9,12 @@ function until_success() {
 }
 
 <%- @disk_mapping.each do |disk_by_id, mapper| %>
+  echo <%= mapper %>
+  hdparm -tT <%= disk_by_id %>
+  smartctl -q errorsonly -a <%= disk_by_id %> || exit $?
+<%- end %>
+
+<%- @disk_mapping.each do |disk_by_id, mapper| %>
   echo
   echo
   echo "/etc/zfs_pools/<%= @name %>/<%= mapper %>-<%= disk_by_id %>"

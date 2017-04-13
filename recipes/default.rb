@@ -1,5 +1,8 @@
 include_recipe 'zfs' if platform_family?('gentoo')
 
+package 'hdparm'
+package 'smartmontools'
+
 [node[:zfs_pools]].flatten.compact.each do |zfs_pool|
   %w[setup mount].each do |script_type|
     template "/.zfs_pool_#{script_type}-#{zfs_pool[:name]}.sh" do
