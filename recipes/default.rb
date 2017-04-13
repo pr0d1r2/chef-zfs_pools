@@ -10,3 +10,5 @@ include_recipe 'zfs' if platform_family?('gentoo')
     end
   end
 end
+
+execute "sed -i 's_#!/sbin/runscript_#!/sbin/openrc-run_' /etc/init.d/zfs*"
