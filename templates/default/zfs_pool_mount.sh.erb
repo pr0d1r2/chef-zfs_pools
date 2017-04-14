@@ -8,6 +8,10 @@ function until_success() {
   done
 }
 
+if [ -f <%= @mountpoint %>/.keep ]; then
+  rm -f <%= @mountpoint %>/.keep || exit $?
+fi
+
 <%- @disk_mapping.each do |disk_by_id, mapper| %>
   echo
   echo
