@@ -1,0 +1,45 @@
+#!/bin/bash
+
+function echorun() {
+  echo "$@"
+  $@ || exit $?
+}
+
+mount | grep -q " on /usr/portage type"
+if [ $? -gt 0 ]; then
+  echorun mv /usr/portage /usr/portage-old || exit $?
+fi
+
+for MOUNTPOINT in /var/tmp /var/cache
+do
+  mount | grep -q " on $MOUNTPOINT type zfs"
+  if [ $? -gt 0 ]; then
+    if [ -d $MOUNTPOINT ]; then
+      echorun rm -rf $MOUNTPOINT || exit 0
+    fi
+  fi
+done
+
+zfs mount -a || exit $?
+
+for MOUNTPOINT in /usr/portage /usr/portage/packages /usr/portage/distfiles /var/tmp /var/cache
+do
+  mount | grep -q " on $MOUNTPOINT type zfs "
+  if [ $? -gt 0 ]; then
+    echo "No ZFS mounted in: $MOUNTPOINT"
+    exit 100
+  fi
+done
+
+if [ -d /usr/portage-old ]; then
+  echorun rsync -a /usr/portage-old/ /usr/portage/ || exit $?
+  echorun rm -rf /usr/portage-old/ || exit $?
+fi
+
+echorun emerge --sync || exit $?
+
+if [ ! -d /var/cache/eix ]; then
+  echorun mkdir /var/cache/eix || exit $?
+fi
+echorun chown portage:portage /var/cache/eix || exit $?
+echorun eix-update || exit $?

@@ -14,6 +14,12 @@ package 'smartmontools'
   end
 end
 
+template '/.move_gentoo_changing_files_to_imported_zfs.sh' do
+  source 'move_gentoo_changing_files_to_imported_zfs.sh.erb'
+  owner 'root'
+  mode '0000'
+end
+
 execute "sed -i 's_#!/sbin/runscript_#!/sbin/openrc-run_' /etc/init.d/zfs*"
 
 # Ensure that all mountpoints are in mounted
