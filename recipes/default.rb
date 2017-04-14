@@ -15,3 +15,21 @@ package 'smartmontools'
 end
 
 execute "sed -i 's_#!/sbin/runscript_#!/sbin/openrc-run_' /etc/init.d/zfs*"
+
+# Ensure that all mountpoints are in mounted
+# This ensures that any other operation requiring mountpoints will have proper storage
+#
+# Enabled by default and can be disabled by setting
+if node[:zfs_pools_require_mountpoints_mounted]
+  [node[:zfs_pools]].flatten.compact.each do |zfs_pool|
+    execute "mount | grep -q ' on #{zfs_pool[:mountpoint]} type zfs '"
+
+    subresource_mountpoints = zfs_pool[:sub_resources].values.flatten.map do |sub_resource_entire|
+      sub_resource_entire[:mountpoint]
+    end
+
+    subresource_mountpoints.each do |sub_resource_mountpoint|
+      execute "mount | grep -q ' on #{sub_resource_mountpoint} type zfs '"
+    end
+  end
+end
