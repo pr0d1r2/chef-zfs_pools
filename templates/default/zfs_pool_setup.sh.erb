@@ -30,9 +30,11 @@ fi
 chmod 700 /etc/zfs_pools/<%= @name %>
 
 <%- @disk_mapping.each do |disk_by_id, mapper| %>
+  echo
+  echo
   echo <%= mapper %>
-  hdparm -tT <%= disk_by_id %>
-  smartctl -q errorsonly -a <%= disk_by_id %> || exit $?
+  hdparm -tT /dev/disk/by-id/<%= disk_by_id %>
+  smartctl -q errorsonly -a /dev/disk/by-id/<%= disk_by_id %> || exit $?
 <%- end %>
 
 <%- @disk_mapping.each do |disk_by_id, mapper| %>
