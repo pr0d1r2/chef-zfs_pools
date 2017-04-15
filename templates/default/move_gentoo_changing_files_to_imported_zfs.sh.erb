@@ -5,10 +5,13 @@ function echorun() {
   $@ || exit $?
 }
 
-mount | grep -q " on /usr/portage type"
-if [ $? -gt 0 ]; then
-  echorun mv /usr/portage /usr/portage-old || exit $?
-fi
+for MOUNTPOINT in /usr/portage /usr/src
+do
+  mount | grep -q " on $MOUNTPOINT type"
+  if [ $? -gt 0 ]; then
+    echorun mv $MOUNTPOINT $MOUNTPOINT-old || exit $?
+  fi
+end
 
 for MOUNTPOINT in /var/tmp /var/cache
 do
@@ -22,7 +25,7 @@ done
 
 zfs mount -a || exit $?
 
-for MOUNTPOINT in /usr/portage /usr/portage/packages /usr/portage/distfiles /var/tmp /var/cache
+for MOUNTPOINT in /usr/portage /usr/portage/packages /usr/portage/distfiles /var/tmp /var/cache /usr/src
 do
   mount | grep -q " on $MOUNTPOINT type zfs "
   if [ $? -gt 0 ]; then
@@ -31,10 +34,13 @@ do
   fi
 done
 
-if [ -d /usr/portage-old ]; then
-  echorun rsync -a /usr/portage-old/ /usr/portage/ || exit $?
-  echorun rm -rf /usr/portage-old/ || exit $?
-fi
+for MOUNTPOINT in /usr/portage /usr/src
+do
+  if [ -d $MOUNTPOINT-old ]; then
+    echorun rsync -a $MOUNTPOINT-old/ $MOUNTPOINT/ || exit $?
+    echorun rm -rf $MOUNTPOINT-old/ || exit $?
+  fi
+done
 
 echorun emerge --sync || exit $?
 
